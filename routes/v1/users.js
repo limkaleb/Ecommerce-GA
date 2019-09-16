@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../../controllers/usersController');
+const auth = require('../../middlewares/auth');
 
 router.post('/', usersController.postRegister);
 
@@ -10,10 +11,12 @@ router.get('/', usersController.getUsers);
 
 router.get('/:userId', usersController.getUser);
 
-router.put('/update/:userId', usersController.updateToMerchant);
+// Protected route
+router.put('/update/:userId', auth.isAuthenticated, usersController.updateToMerchant);
 
 router.delete('/', usersController.deleteAll);
 
-router.delete('/:userId', usersController.deleteById);
+// Protected route
+router.delete('/:userId', auth.isAuthenticated, usersController.deleteById);
 
 module.exports = router;

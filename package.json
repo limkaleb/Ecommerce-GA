@@ -5,8 +5,8 @@
   "scripts": {
     "start": "ENVIRONMENT=PRODUCTION node ./bin/www",
     "dev": "ENVIRONMENT=DEVELOPMENT nodemon ./bin/www",
-    "test": "ENVIRONMENT=STAGING mocha ./test --recursive --exit",
-    "test-dev": "ENVIRONMENT=TESTING mocha ./test --recursive --exit"
+    "test": "ENVIRONMENT=STAGING nyc mocha --timeout 10000  ./test --recursive --exit",
+    "test-dev": "ENVIRONMENT=TESTING nyc mocha ./test --recursive --exit"
   },
   "dependencies": {
     "chai": "^4.2.0",
@@ -27,6 +27,7 @@
     "passport-local-mongoose": "^5.0.1"
   },
   "devDependencies": {
-    "dotenv": "^8.1.0"
+    "dotenv": "^8.1.0",
+    "nyc": "^14.1.1"
   }
 }

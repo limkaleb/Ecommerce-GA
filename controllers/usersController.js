@@ -21,8 +21,9 @@ exports.postLogin = async (req, res, next) => {
             return res.status(422).json(errorResponse('Please input correct username and password'));
         }
         const user = await User.authenticate()(req.body.username, req.body.password);
+
         if (user.error) {
-            return res.status(401).json(errorResponse("Incorrect password!"));
+            return res.status(401).json(errorResponse("Password or username is incorrect"));
         }
         const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
         return res.status(200).json(successResponse("Authentication is success!", token));
