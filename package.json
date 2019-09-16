@@ -1,0 +1,32 @@
+{
+  "name": "ecommerce",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "ENVIRONMENT=PRODUCTION node ./bin/www",
+    "dev": "ENVIRONMENT=DEVELOPMENT nodemon ./bin/www",
+    "test": "ENVIRONMENT=STAGING mocha ./test --recursive --exit",
+    "test-dev": "ENVIRONMENT=TESTING mocha ./test --recursive --exit"
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-session": "^1.16.2",
+    "hbs": "~4.0.4",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.2.0",
+    "mongoose": "^5.7.0",
+    "morgan": "~1.9.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.1"
+  },
+  "devDependencies": {
+    "dotenv": "^8.1.0"
+  }
+}
