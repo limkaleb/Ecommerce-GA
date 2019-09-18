@@ -10,21 +10,17 @@ exports.postOrder = async (req, res, next) => {
             productId,
             qty
         } = req.body;
-        console.log(typeof (qty));
-
         let user = await User.findById(req.params.userId);
         let order = await Order.findById(user.orders[user.orders.length - 1]);
-        // console.log(user.orders.length);
-        // console.log(user.orders[user.orders.length - 1]);
-        // console.log(order.isComplete);
         if (order && !order.isComplete) {
-            console.log('found active order');
-            let cart = await order.carts.find(product => ({ 'product.product': productId }));
-            // console.log(cart)
+            // console.log('found active order');
+            let cart = await order.carts.find(x => x.product == productId);
             if (cart) {
+                // console.log('found cart')
                 let qtyInt = parseInt(qty)
                 cart.qty += qtyInt
             } else {
+                // console.log('not found cart')
                 await order.carts.push({
                     product: productId, qty: qty
                 });
@@ -38,10 +34,9 @@ exports.postOrder = async (req, res, next) => {
             product.inventory = stock;
             await product.save();
             await order.save();
-            // console.log(order);
             res.status(200).json(successResponse('Order product success', order));
         } else {
-            console.log('not found active order');
+            // console.log('not found active order');
             let newOrder = new Order;
             newOrder.carts.push({
                 product: productId, qty: qty
@@ -49,14 +44,12 @@ exports.postOrder = async (req, res, next) => {
             let product = await Product.findById(productId);
             newOrder.orderPrice = (product.price * qty);
             stock = product.inventory - qty;
-            console.log(stock);
             if (stock < 0) {
                 return res.status(422).json(errorResponse(`Product stock is only ${product.inventory}`));
             }
             product.inventory = stock;
             await product.save();
             await newOrder.save();
-            console.log(newOrder);
             user.orders.push(newOrder);
             await user.save();
             res.status(200).json(successResponse('Order product success', newOrder));
@@ -119,7 +112,6 @@ exports.updateOrderQty = async (req, res, next) => {
             return res.status(422).json(errorResponse(`Product stock is only ${product.inventory}`));
         }
         product.inventory = stock;
-        console.log(product);
         await product.save();
         await order.save();
 
@@ -150,19 +142,8 @@ exports.deleteById = async function (req, res, next) {
         user.orders.splice(index, 1);
         await Order.deleteOne({ _id: req.params.orderId });
         let result = await user.save();
-
         res.status(200).json(successResponse("Delete an item is success", result));
     } catch (err) {
         res.status(422).json(errorResponse("Something is error when deleting an item", err));
-    }
-}
-
-exports.deleteAllOrder = async function (req, res, next) {
-    try {
-        let order = await Order.deleteMany({});
-
-        res.status(200).json(successResponse("Delete all orders is success", order));
-    } catch {
-        res.status(422).json(errorResponse("Something is error when deleting all orders", err));
     }
 }
