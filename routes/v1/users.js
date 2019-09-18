@@ -14,8 +14,6 @@ router.get('/:userId', usersController.getUser);
 // Protected route
 router.put('/update/:userId', auth.isAuthenticated, usersController.updateToMerchant);
 
-router.delete('/', usersController.deleteAll);
-
 // Protected route
 router.delete('/:userId', auth.isAuthenticated, usersController.deleteById);
 

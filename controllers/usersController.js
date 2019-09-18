@@ -25,7 +25,7 @@ exports.postLogin = async (req, res, next) => {
         if (user.error) {
             return res.status(401).json(errorResponse("Password or username is incorrect"));
         }
-        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+        const token = jwt.sign({ id: user.user.id }, process.env.SECRET_KEY, { expiresIn: '24h' });
         return res.status(200).json(successResponse("Authentication is success!", token));
     }
     catch (err) {

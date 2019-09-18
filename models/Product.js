@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
     imagePath: {
-        type: String,
-        required: true
+        type: String
     },
     name: {
         type: String,

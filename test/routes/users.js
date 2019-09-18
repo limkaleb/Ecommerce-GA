@@ -203,15 +203,6 @@ describe('User', () => {
                     done();
                 });
         })
-        it('should delete all users', done => {
-            chai.request(app)
-                .delete('/api/v1/users')
-                .end((err, res) => {
-                    expect(res.status).eql(200);
-                    expect(res.body).to.be.a('object');
-                    done();
-                });
-        })
     })
 
 
