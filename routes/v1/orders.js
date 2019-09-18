@@ -20,7 +20,4 @@ router.put('/quantity/:orderId/:cartId', auth.isAuthenticated, ordersController.
 // delete single order from orderID
 router.delete('/:orderId', auth.isAuthenticated, ordersController.deleteById);
 
-// delete all order for developer
-router.delete('/', ordersController.deleteAllOrder);
-
 module.exports = router;
