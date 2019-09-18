@@ -80,3 +80,12 @@ exports.deleteById = async function (req, res, next) {
         res.status(422).json(errorResponse("Something is error when deleting an item", err));
     }
 }
+
+exports.getAllProducts = async (req, res, next) => {
+    try {
+        let products = await Product.find({});
+        res.status(200).json(successResponse("Get all products success", products));
+    } catch (err) {
+        res.status(422).json(errorResponse("Something is error when deleting an item", err));
+    }
+}

@@ -13,4 +13,7 @@ router.put('/:productId', auth.isAuthenticated, productsController.updateProduct
 
 router.delete('/:productId', auth.isAuthenticated, productsController.deleteById);
 
+// get all products
+router.get('/', productsController.getAllProducts);
+
 module.exports = router;
