@@ -135,6 +135,7 @@ exports.updateOrderStatus = async (req, res, next) => {
     }
 }
 
+// Not yet edit inventory when isComplete still false
 exports.deleteById = async function (req, res, next) {
     try {
         let user = await User.findOne({ orders: mongoose.Types.ObjectId(req.params.orderId) });

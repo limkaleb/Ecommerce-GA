@@ -7,8 +7,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const User = require('./models/User');
-
 require('dotenv').config();
+require('./config/cloudinaryConfig');
+
 const { MONGODB_URI } = require('./config/mongoConfig');
 
 const app = express();

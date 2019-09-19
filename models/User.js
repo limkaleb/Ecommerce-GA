@@ -3,6 +3,12 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
+    profilePicturePath: {
+        type: String
+    },
+    profilePictureId: {
+        type: String
+    },
     username: {
         type: String,
         required: true

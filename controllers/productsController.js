@@ -1,7 +1,9 @@
 const Product = require('../models/Product');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary');
 const { successResponse, errorResponse } = require('../helpers/response');
+const { dataUri } = require('../middlewares/multer');
 
 exports.postProduct = async (req, res, next) => {
     try {
@@ -74,6 +76,11 @@ exports.deleteById = async function (req, res, next) {
         let user = await User.findOne({ products: mongoose.Types.ObjectId(req.params.productId) });
         let index = await user.products.indexOf(req.params.productId);
         user.products.splice(index, 1);
+        let product = await Product.findById(req.params.productId);
+        if (product.imageId) {
+            await cloudinary.uploader.destroy(product.imageId);
+        }
+        await Product.deleteOne({ _id: req.params.productId })
         let result = await user.save();
         res.status(200).json(successResponse("Delete an item is success", result));
     } catch (err) {
@@ -87,5 +94,40 @@ exports.getAllProducts = async (req, res, next) => {
         res.status(200).json(successResponse("Get all products success", products));
     } catch (err) {
         res.status(422).json(errorResponse("Something is error when deleting an item", err));
+    }
+}
+
+exports.uploadPhotos = async (req, res, next) => {
+    try {
+        let product = await Product.findById(req.params.productId);
+        if (req.file) {
+            const file = await dataUri(req).content;
+            let result = await cloudinary.uploader.upload(file);
+            product.imagePath = result.secure_url;
+            product.imageId = result.public_id;
+            let results = await product.save();
+            return res.status(200).json(successResponse("Upload photos success", results));
+        } else {
+            res.status(404).json(errorResponse("Photo not found, nothing to upload!"));
+        }
+    } catch (err) {
+        res.status(422).json(errorResponse("Something is error while processing your request", err));
+    }
+}
+
+exports.destroyPhoto = async (req, res, next) => {
+    try {
+        let product = await Product.findById(req.params.productId);
+        if (product.imageId) {
+            await cloudinary.uploader.destroy(product.imageId);
+            product.imagePath = undefined;
+            product.imageId = undefined;
+            let results = await product.save();
+            return res.status(200).json(successResponse("Destroy photos success", results));
+        } else {
+            return res.status(404).json(errorResponse("Photo not found, nothing to destroy!"));
+        }
+    } catch (err) {
+        res.status(422).json(errorResponse("Something is error while processing your request", err));
     }
 }
