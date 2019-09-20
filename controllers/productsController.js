@@ -18,7 +18,7 @@ exports.postProduct = async (req, res, next) => {
             let product = await Product.create(newProduct);
             user.products.push(product);
             let result = await user.save();
-            res.status(200).json(successResponse('Add product success', result));
+            res.status(201).json(successResponse('Add product success', result));
         } else {
             res.status(403).json(errorResponse('User is not a merchant!', user));
         }
@@ -89,14 +89,11 @@ exports.deleteById = async function (req, res, next) {
 }
 
 exports.getAllProducts = async (req, res, next) => {
-    try {
-        let products = await Product.find({});
-        res.status(200).json(successResponse("Get all products success", products));
-    } catch (err) {
-        res.status(422).json(errorResponse("Something is error when deleting an item", err));
-    }
+    let products = await Product.find({});
+    res.status(200).json(successResponse("Get all products success", products));
 }
 
+/* istanbul ignore next */
 exports.uploadPhotos = async (req, res, next) => {
     try {
         let product = await Product.findById(req.params.productId);
@@ -115,6 +112,7 @@ exports.uploadPhotos = async (req, res, next) => {
     }
 }
 
+/* istanbul ignore next */
 exports.destroyPhoto = async (req, res, next) => {
     try {
         let product = await Product.findById(req.params.productId);

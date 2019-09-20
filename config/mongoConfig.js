@@ -1,5 +1,5 @@
 var MONGODB_URI;
-
+/* istanbul ignore next */
 if (process.env.ENVIRONMENT === 'PRODUCTION') {
     MONGODB_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-xwwtn.mongodb.net/ecommerce?retryWrites=true&w=majority`;
 } else if (process.env.ENVIRONMENT === 'STAGING') {

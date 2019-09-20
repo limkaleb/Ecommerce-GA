@@ -5,8 +5,8 @@
   "scripts": {
     "start": "ENVIRONMENT=PRODUCTION node ./bin/www",
     "dev": "ENVIRONMENT=DEVELOPMENT nodemon ./bin/www",
-    "test": "ENVIRONMENT=STAGING nyc mocha --timeout 10000  ./test --recursive --exit",
-    "test-dev": "ENVIRONMENT=TESTING nyc mocha ./test --recursive --exit"
+    "test": "ENVIRONMENT=STAGING nyc mocha --timeout 10000 ./test --recursive --exit",
+    "test-dev": "ENVIRONMENT=TESTING nyc --reporter=html mocha --timeout 10000 ./test --recursive --exit"
   },
   "dependencies": {
     "chai": "^4.2.0",

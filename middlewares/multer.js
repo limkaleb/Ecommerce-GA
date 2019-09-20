@@ -1,10 +1,10 @@
+/* istanbul ignore next */
 const multer = require('multer');
 const path = require('path');
 const Datauri = require('datauri');
-
 const storage = multer.memoryStorage();
 const dUri = new Datauri();
-
+/* istanbul ignore next */
 const upload = multer({
     storage: storage,
     limits: { fileSize: 100000 },
@@ -13,6 +13,7 @@ const upload = multer({
     }
 });
 
+/* istanbul ignore next */
 function checkFileType(file, cb) {
     const filetypes = /jpeg|jpg|png|gif/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());

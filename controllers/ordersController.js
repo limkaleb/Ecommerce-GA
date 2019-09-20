@@ -88,7 +88,6 @@ exports.getOrderHistory = async (req, res, next) => {
                 path: 'carts.product',
                 select: ['_id', 'name', 'price']
             });
-
         res.status(200).json(successResponse('Get an order is success', order));
     } catch {
         res.status(422).json(errorResponse('Something is error when getting data', err));
@@ -141,6 +140,10 @@ exports.deleteById = async function (req, res, next) {
         let user = await User.findOne({ orders: mongoose.Types.ObjectId(req.params.orderId) });
         let index = await user.products.indexOf(req.params.prodId);
         user.orders.splice(index, 1);
+        let order = await Order.findById(req.params.orderId);
+        if (!order.isComplete) {
+            return res.status(422).json(errorResponse("Sorry, cannot delete active order!"));
+        }
         await Order.deleteOne({ _id: req.params.orderId });
         let result = await user.save();
         res.status(200).json(successResponse("Delete an item is success", result));

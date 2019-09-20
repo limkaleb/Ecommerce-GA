@@ -39,6 +39,7 @@ exports.postLogin = async (req, res, next) => {
 exports.updateToMerchant = async function (req, res, next) {
     try {
         const id = req.params.userId;
+        // console.log(req.decoded);
         let user = await User.findByIdAndUpdate({ _id: id },
             {
                 $set: { isMerchant: req.body.isMerchant }
@@ -58,6 +59,7 @@ exports.updateToMerchant = async function (req, res, next) {
 exports.deleteById = async function (req, res, next) {
     try {
         let user = await User.findById(req.params.userId);
+        /* istanbul ignore next */
         if (user.profilePictureId) {
             await cloudinary.uploader.destroy(user.profilePictureId);
         }
@@ -82,6 +84,7 @@ exports.getUser = async function (req, res, next) {
     }
 }
 
+/* istanbul ignore next */
 exports.uploadPhotos = async (req, res, next) => {
     try {
         let user = await User.findById(req.params.userId);
@@ -101,6 +104,7 @@ exports.uploadPhotos = async (req, res, next) => {
     }
 }
 
+/* istanbul ignore next */
 exports.destroyPhoto = async (req, res, next) => {
     try {
         let user = await User.findById(req.params.userId);
