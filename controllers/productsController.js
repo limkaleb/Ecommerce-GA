@@ -5,6 +5,10 @@ const cloudinary = require('cloudinary');
 const { successResponse, errorResponse } = require('../helpers/response');
 const { dataUri } = require('../middlewares/multer');
 
+const redis = require("redis"),
+    client = redis.createClient();
+
+
 exports.postProduct = async (req, res, next) => {
     try {
         let user = await User.findOne({ _id: req.params.userId });
@@ -27,16 +31,36 @@ exports.postProduct = async (req, res, next) => {
     }
 }
 
-exports.getProducts = async (req, res, next) => {
+exports.getProducts = (req, res, next) => {
     try {
-        let user = await User
-            .findById(req.params.userId)
-            .select(['_id', 'username', 'products'])
-            .populate({
-                path: 'products',
-                select: ['_id', 'name', 'description', 'price', 'inventory']
-            });
-        res.status(200).json(successResponse("Show products is success", user));
+        // let user = await User
+        //     .findById(req.params.userId)
+        //     .select(['_id', 'username', 'products'])
+        //     .populate({
+        //         path: 'products',
+        //         select: ['_id', 'name', 'description', 'price', 'inventory']
+        //     });
+        return client.get(req.params.userId, (err, result) => {
+            if (result) {
+                const resultJSON = JSON.parse(result);
+                return res.status(200).json(successResponse("Show products is success", resultJSON));
+            } else {
+                User
+                    .findById(req.params.userId)
+                    .select(['_id', 'username', 'products'])
+                    .populate({
+                        path: 'products',
+                        select: ['_id', 'name', 'description', 'price', 'inventory']
+                    })
+                    .then(user => {
+                        const responseJSON = user;
+                        client.setex(req.params.userId, 3600, JSON.stringify(responseJSON))
+                        // console.log(responseJSON)
+                        return res.status(200).json(successResponse("Show products is success", responseJSON));
+                    })
+            }
+        })
+        // res.status(200).json(successResponse("Show products is success", user));
     } catch (err) {
         res.status(422).json(errorResponse("Something is error when getting data", err));
     }
@@ -97,16 +121,25 @@ exports.getAllProducts = async (req, res, next) => {
 exports.uploadPhotos = async (req, res, next) => {
     try {
         let product = await Product.findById(req.params.productId);
-        if (req.file) {
-            const file = await dataUri(req).content;
-            let result = await cloudinary.uploader.upload(file);
-            product.imagePath = result.secure_url;
-            product.imageId = result.public_id;
-            let results = await product.save();
-            return res.status(200).json(successResponse("Upload photos success", results));
-        } else {
-            res.status(404).json(errorResponse("Photo not found, nothing to upload!"));
+        for (const file of req.files) {
+            product.images.push({
+                url: file.secure_url,
+                public_id: file.public_id
+            });
         }
+        let results = await product.save();
+        res.status(200).json(successResponse("Upload multiple photos success", results));
+
+        // if (req.file) {
+        //     const file = await dataUri(req).content;
+        //     let result = await cloudinary.uploader.upload(file);
+        //     product.imagePath = result.secure_url;
+        //     product.imageId = result.public_id;
+        //     let results = await product.save();
+        //     return res.status(200).json(successResponse("Upload photos success", results));
+        // } else {
+        //     res.status(404).json(errorResponse("Photo not found, nothing to upload!"));
+        // }
     } catch (err) {
         res.status(422).json(errorResponse("Something is error while processing your request", err));
     }

@@ -3,10 +3,13 @@ const router = express.Router();
 const productsController = require('../../controllers/productsController');
 const auth = require('../../middlewares/auth');
 const { multerUploads } = require('../../middlewares/multer');
+const multer = require('multer');
+const { storage } = require('../../config/cloudinaryConfig');
+const upload = multer({ storage });
 
 router.post('/:userId', auth.isAuthenticated, productsController.postProduct);
 
-router.post('/photo/:productId', multerUploads, auth.isAuthenticated, productsController.uploadPhotos);
+router.post('/photo/:productId', upload.array('images', 4), productsController.uploadPhotos);
 
 router.delete('/photo/:productId', multerUploads, auth.isAuthenticated, productsController.destroyPhoto);
 

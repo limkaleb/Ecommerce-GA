@@ -24,4 +24,6 @@ router.put('/update/:userId', auth.isAuthenticated, usersController.updateToMerc
 // Protected route
 router.delete('/:userId', auth.isAuthenticated, usersController.deleteById);
 
+router.post('/change-password/:userId', usersController.changePassword);
+
 module.exports = router;

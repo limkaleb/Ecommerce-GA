@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
-    imagePath: {
-        type: String
-    },
-    imageId: {
-        type: String
-    },
+    images: [{ url: String, public_id: String }],
+    // imagePath: {
+    //     type: String
+    // },
+    // imageId: {
+    //     type: String
+    // },
     name: {
         type: String,
         required: true

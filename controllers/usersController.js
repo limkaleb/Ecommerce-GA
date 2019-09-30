@@ -121,3 +121,20 @@ exports.destroyPhoto = async (req, res, next) => {
         res.status(422).json(errorResponse("Something is error while processing your request", err));
     }
 }
+
+exports.changePassword = async (req, res, next) => {
+    try {
+        let user = await User.findById(req.params.userId);
+        if (user) {
+            user.setPassword(req.body.newPassword, function () {
+                user.save();
+            });
+            return res.status(200).json(successResponse("change password success!"));
+        } else {
+            return res.status(404).json(errorResponse("New password not found!"));
+        }
+    } catch (err) {
+        res.status(422).json(errorResponse("Something is error while processing your request", err));
+    }
+}
+
