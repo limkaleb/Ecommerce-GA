@@ -5,9 +5,9 @@ const cloudinary = require('cloudinary');
 const { successResponse, errorResponse } = require('../helpers/response');
 const { dataUri } = require('../middlewares/multer');
 
-const redis = require("redis"),
-    client = redis.createClient();
-
+const redis = require("redis");
+// const client = redis.createClient();
+const client = require('redis').createClient(process.env.REDIS_URL);
 
 exports.postProduct = async (req, res, next) => {
     try {
